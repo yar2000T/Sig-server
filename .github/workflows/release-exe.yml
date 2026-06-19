@@ -1,0 +1,36 @@
+name: Release Windows EXE
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build-release-exe:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install pkg
+        run: npm install -g pkg
+
+      - name: Build Windows executable
+        run: pkg cli/index.js --targets node18-win-x64 --output sig-server.exe
+
+      - name: Upload release asset
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ./sig-server.exe
+          asset_name: sig-server.exe
+          asset_content_type: application/octet-stream

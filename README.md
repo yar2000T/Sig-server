@@ -238,7 +238,21 @@ pkg cli/index.js --targets node18-win-x64 --output sig-server.exe
 ```
 
 If the native `.node` binding is not included automatically, build it first with `npm install` or `npm rebuild`, then copy the compiled binary from `build/Release/` alongside the generated EXE.
-```
+
+## GitHub Actions workflows
+
+This project includes two workflows:
+
+- `.github/workflows/build-exe.yml` — runs on `push` to `main` and manually via the Actions UI; builds `sig-server.exe` and uploads it as a workflow artifact.
+- `.github/workflows/release-exe.yml` — runs when a GitHub release is published; builds `sig-server.exe` and uploads it directly to the release assets.
+
+### Build workflow
+
+The build workflow is useful for CI artifact generation without publishing a release. It compiles the EXE and stores it in the workflow run artifacts.
+
+### Release workflow
+
+The release workflow runs automatically when a release is published and attaches `sig-server.exe` to the GitHub release.
 
 ## Notes
 
