@@ -35,9 +35,6 @@ jobs:
         run: pkg cli/index.js --targets node18-win-x64 --output sig-server.exe
 
       - name: Upload release asset
-        uses: actions/upload-release-asset@v1
+        uses: softprops/action-gh-release@v2
         with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ./sig-server.exe
-          asset_name: sig-server.exe
-          asset_content_type: application/octet-stream
+          files: sig-server.exe
