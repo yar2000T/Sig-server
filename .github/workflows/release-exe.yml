@@ -1,5 +1,8 @@
 name: Release Windows EXE
 
+permissions:
+  contents: write
+  
 on:
   release:
     types: [published]
@@ -34,7 +37,9 @@ jobs:
       - name: Build Windows executable
         run: pkg cli/index.js --targets node18-win-x64 --output sig-server.exe
 
-      - name: Upload release asset
+      - name: Upload Release asset
         uses: softprops/action-gh-release@v2
         with:
           files: sig-server.exe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
