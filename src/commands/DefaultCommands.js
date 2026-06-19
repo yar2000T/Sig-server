@@ -4,8 +4,10 @@ const { inspect } = require("util");
 
 const Minion = require("../bots/Minion");
 const PlayerBot = require("../bots/PlayerBot");
+const DummyPlayer = require("../bots/DummyPlayer");
+const Misc = require("../primitives/Misc");
 
-const IPvalidate = /((^\s*((([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))\s*$)|(^\s*((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%.+)?\s*$))/;
+const IPvalidate = /((^\s*((([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))\s*$)|(^\s*((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-5A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%.+)?\s*$))/;
 
 /**
  * @param {string} str
@@ -602,9 +604,33 @@ module.exports = (commands, chatCommands) => {
             }
         }),
         genCommand({
-            name: "rmbot",
+            name: "adddummy",
+            args: "<world id> <x> <y> <mass> [name] [skin] [color]",
+            desc: "spawn a frozen training dummy in a world using mass value",
+            /**
+             * @param {ServerHandle} context
+             */
+            exec: (handle, context, args) => {
+                if (args.length < 4)
+                    return void handle.logger.print("missing required arguments");
+                const world = getWorldByID(args, handle, 0, false);
+                const x = getFloat(args, handle, 1, "x");
+                const y = getFloat(args, handle, 2, "y");
+                const mass = getFloat(args, handle, 3, "mass");
+                const name = args[4] || "Training Dummy";
+                const skin = args[5] || "";
+                const color = args.length >= 7 ? parseInt(args[6]) : null;
+                if (world === false || x === false || y === false || mass === false)
+                    return;
+                const size = Math.sqrt(mass * 100);
+                new DummyPlayer(world, x, y, size, name, skin, color);
+                handle.logger.print(`added training dummy in world ${world.id} at (${x}, ${y}) with mass ${mass}`);
+            }
+        }),
+        genCommand({
+            name: "rmdummy",
             args: "<world id> [count=1]",
-            desc: "remove player bots from a world",
+            desc: "remove training dummies from a world",
             /**
              * @param {ServerHandle} context
              */
@@ -617,11 +643,11 @@ module.exports = (commands, chatCommands) => {
                     return;
                 let realCount = 0;
                 for (let i = 0, l = world.players.length; i < l && realCount < count; i++) {
-                    if (world.players[i].router.type !== "playerbot") continue;
+                    if (world.players[i].router.type !== "dummyplayer") continue;
                     world.players[i].router.close();
                     realCount++; i--; l--;
                 }
-                handle.logger.print(`removed ${realCount} player bots from world`);
+                handle.logger.print(`removed ${realCount} training dummy${realCount === 1 ? "" : "ies"} from world`);
             }
         }),
         genCommand({
@@ -740,8 +766,6 @@ module.exports = (commands, chatCommands) => {
                     return void chat.directMessage(null, context, "you don't have a player associated with yourself");
                 if (!context.player.hasWorld)
                     return void chat.directMessage(null, context, "you're not in a world");
-                if (context.player.score >= 5500)
-                    return void chat.directMessage(null, context, "you have >5500 score");
                 context.player.world.removePlayer(context.player);
             }
         }),

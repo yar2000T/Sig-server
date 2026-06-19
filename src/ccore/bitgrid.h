@@ -1,8 +1,16 @@
 #pragma once
 #include <node_api.h>
+#include <stdint.h>
 
 #include "circalloc.h"
 #include "ccore.h"
+
+typedef struct rect_t {
+	double x;
+	double y;
+	double w;
+	double h;
+} rect_t;
 
 typedef struct bitgrid_range_t {
 	int32_t left;

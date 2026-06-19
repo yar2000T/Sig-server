@@ -9,7 +9,7 @@ circalloc_t circalloc(size_t capacity_exponent, size_t item_size) {
 	void** pointers = malloc(sizeof(void*) * capacity);
 
 	for (size_t i = 0; i < capacity; ++i) {
-		pointers[i] = data + i * item_size;
+		pointers[i] = (char*)data + i * item_size;
 	}
 
 	circalloc_t ca = { pointers, data, item_size, capacity - 1, 0, capacity - 1 };
@@ -27,6 +27,10 @@ void* circalloc_alloc(circalloc_t* ca) {
 	void* item = ca->pointers[ca->pointers_front++];
 	ca->pointers_front &= ca->capacity_mask;
 	return item;
+}
+
+void* circalloc_data_ptr(void* data, size_t offset) {
+	return (char*)data + offset;
 }
 
 void circalloc_free(circalloc_t* ca, void* item) {
